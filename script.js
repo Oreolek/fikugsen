@@ -67,8 +67,53 @@ var options = {
 			return positive(specials.strength.value - 5);
 		})
 	],
-	skills: {
-	}
+	skills: [
+		parameter('energy_weapons','Энергетическое оружие', function(specials){
+			return specials.agility.value * 2;
+		}),
+		parameter('guns','Огнестрельное Оружие', function(specials){
+			return specials.agility.value * 2;
+		}),
+		parameter('archery','Стрельба из лука', function(specials){
+			return 5 + specials.strength.value + specials.agility.value;
+		}),
+		parameter('melee','Холодное оружие', function(specials){
+			return 20 + 2 * (specials.strength.value + specials.agility.value);
+		}),
+		parameter('unarmed','Рукопашный бой', function(specials){
+			return 30 + 2 * (specials.strength.value + specials.agility.value);
+		}),
+		parameter('throwing','Метание', function(specials){
+			return 4 * specials.agility.value;
+		}),
+		parameter('lockpick','Взлом', function(specials){
+			return 10 + specials.agility.value + specials.intelligence.value;
+		}),
+		parameter('first_aid','Медицина', function(specials){
+			return 15  + specials.intelligence.value;
+		}),
+		parameter('repair','Ремонт', function(specials){
+			return 3 * specials.intelligence.value;
+		}),
+		parameter('science','Наука', function(specials){
+			return 4 * specials.intelligence.value;
+		}),
+		parameter('stealth','Скрытность', function(specials){
+			return 3 * specials.agility.value;
+		}),
+		parameter('survival','Выживание', function(specials){
+			return 2 * (specials.endurance.value + specials.intelligence.value);
+		}),
+		parameter('performance','Выступление', function(specials){
+			return 4 * specials.intelligence.value;
+		}),
+		parameter('animal_handling','Обращение с животными', function(specials){
+			return specials.agility.value + specials.strength.value + specials.intelligence.value;
+		}),
+		parameter('driving','Вождение', function(specials){
+			return 2 * (specials.agility.value + specials.endurance.value);
+		})
+	]
 };
 function rewrite_value(newvalue) {
 	jQuery(this).siblings(".value").text(newvalue);
@@ -76,8 +121,12 @@ function rewrite_value(newvalue) {
 function update_derived() {
 	var i = 0;
 	jQuery('#derived').empty();
+	jQuery('#skills').empty();
 	for (i = 0; i < options.derived.length; i++) {
 		jQuery('#derived').append('<div class="parameter"><div class="value" id="' + options.derived[i].id + '"> '+ options.derived[i].value(options.specials) + ' </div></div><div class="name">' + options.derived[i].name + '</div>');
+	}
+	for (i = 0; i < options.skills.length; i++) {
+		jQuery('#skills').append('<div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ options.skills[i].value(options.specials) + ' </div></div><div class="name">' + options.skills[i].name + '</div>');
 	}
 }
 
