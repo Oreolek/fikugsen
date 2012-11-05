@@ -7,3 +7,10 @@ Used libraries: [jQuery](http://jquery.com), [LESS](http://www.lesscss.org).
 Texture by webtreats: http://www.flickr.com/photos/webtreatsetc/4081217898/ (CC-BY 2.0)
 
 Text is in Russian, but code should be obvious.
+
+### To-Do list:
+* Generating first-level characters
+* Traits (maybe)
+* Gear
+* Level advancing
+* Perks
