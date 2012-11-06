@@ -8,12 +8,6 @@ function parameter(id, name, value) {
 		value: value
 	};
 }
-parameter.prototype.increment = function () {
-	this.value = this.value + 1;
-};
-parameter.prototype.decrement = function () {
-	this.value = this.value - 1;
-};
 function positive(value) {
 	if (value < 1) return 1;
 	else return value;
@@ -115,9 +109,6 @@ var options = {
 		})
 	]
 };
-function rewrite_value(newvalue) {
-	jQuery(this).siblings(".value").text(newvalue);
-}
 function update_derived() {
 	var i = 0;
 	jQuery('#derived').empty();
@@ -139,9 +130,9 @@ jQuery(document).ready(function () {
 	update_derived();
 	jQuery('#specials .increment').click(function () {
 		for (i = 0; i < objects.length; i++) {
-			if (options.specials[objects[i]].id === jQuery(this).id) {
-				options.specials[objects[i]].increment();
-				rewrite_value(options.specials[objects[i]].value);
+			if (options.specials[objects[i]].id == jQuery(this).siblings(".value").attr('id')) {
+				options.specials[objects[i]].value++;
+        jQuery(this).siblings(".value").text(options.specials[objects[i]].value);
 			}
 		}
 		update_derived();
