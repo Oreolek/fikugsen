@@ -5,7 +5,8 @@ function parameter(id, name, value) {
 	return {
 		id: id,
 		name: name,
-		value: value
+		value: value,
+		tagged: false
 	};
 }
 function positive(value) {
@@ -111,13 +112,19 @@ var options = {
 };
 function update_derived() {
 	var i = 0;
+	var text = '';
 	jQuery('#derived').empty();
 	jQuery('#skills').empty();
 	for (i = 0; i < options.derived.length; i++) {
 		jQuery('#derived').append('<div class="parameter"><div class="value" id="' + options.derived[i].id + '"> '+ options.derived[i].value(options.specials) + ' </div></div><div class="name">' + options.derived[i].name + '</div>');
 	}
 	for (i = 0; i < options.skills.length; i++) {
-		jQuery('#skills').append('<div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ options.skills[i].value(options.specials) + ' </div></div><div class="name">' + options.skills[i].name + '</div>');
+		text = '<div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ options.skills[i].value(options.specials) + ' </div></div><div class="name">' + options.skills[i].name + '<input type="checkbox"';
+		if (options.skills[i].tagged) {
+			text = text + ' checked';
+		}
+		text = text + '></div>';
+		jQuery('#skills').append(text);
 	}
 }
 
@@ -128,6 +135,22 @@ jQuery(document).ready(function () {
 		jQuery('#specials').append('<div class="parameter"><a class="decrement" href="#">–</a><div class="value" id="' + options.specials[objects[i]].id + '"> '+ options.specials[objects[i]].value + ' </div><a class="increment" href="#">+</a></div><div class="name">' +	options.specials[objects[i]].name + '</div>');
 	}
 	update_derived();
+	jQuery('#skills input[type=checkbox]').click(function () {
+		if (jQuery(this).is(':checked')) options.skills_to_tag--;
+		else options.skills_to_tag++;
+		if (options.skills_to_tag <= 0){
+			jQuery(this).removeAttr('checked');
+		  options.skills_to_tag++;
+			return false;
+		}
+		for (i = 0; i < options.skills.length; i++) {
+			if (options.skills[i].id == jQuery(this).siblings(".value").attr('id')) {
+				options.skills[i].tagged = !options.skills[i].tagged;
+				break;
+			}
+		}
+		update_derived();
+	});
 	jQuery('#specials .increment').click(function () {
     if (options.special_points == 0) return false;
     options.special_points--;
@@ -135,6 +158,7 @@ jQuery(document).ready(function () {
 			if (options.specials[objects[i]].id == jQuery(this).siblings(".value").attr('id')) {
 				options.specials[objects[i]].value++;
         jQuery(this).siblings(".value").text(' '+options.specials[objects[i]].value+' ');
+				break;
 			}
 		}
 		update_derived();
@@ -145,6 +169,7 @@ jQuery(document).ready(function () {
 			if (options.specials[objects[i]].id == jQuery(this).siblings(".value").attr('id')) {
 				options.specials[objects[i]].value--;
         jQuery(this).siblings(".value").text(' '+options.specials[objects[i]].value+' ');
+				break;
 			}
 		}
 		update_derived();
