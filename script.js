@@ -139,4 +139,14 @@ jQuery(document).ready(function () {
 		}
 		update_derived();
 	});
+  jQuery('#specials .decrement').click(function () {
+    options.special_points++;
+		for (i = 0; i < objects.length; i++) {
+			if (options.specials[objects[i]].id == jQuery(this).siblings(".value").attr('id')) {
+				options.specials[objects[i]].value--;
+        jQuery(this).siblings(".value").text(' '+options.specials[objects[i]].value+' ');
+			}
+		}
+		update_derived();
+	});
 });
