@@ -119,11 +119,11 @@ function update_derived() {
 		jQuery('#derived').append('<div class="parameter"><div class="value" id="' + options.derived[i].id + '"> '+ options.derived[i].value(options.specials) + ' </div></div><div class="name">' + options.derived[i].name + '</div>');
 	}
 	for (i = 0; i < options.skills.length; i++) {
-		text = '<div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ options.skills[i].value(options.specials) + ' </div></div><div class="name">' + options.skills[i].name + '<input type="checkbox"';
+		text = '<div class="row"><div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ options.skills[i].value(options.specials) + ' </div></div><div class="name">' + options.skills[i].name + '<input type="checkbox"';
 		if (options.skills[i].tagged) {
 			text = text + ' checked';
 		}
-		text = text + '></div>';
+		text = text + '></div></div>';
 		jQuery('#skills').append(text);
 	}
 }
@@ -135,7 +135,7 @@ jQuery(document).ready(function () {
 		jQuery('#specials').append('<div class="parameter"><a class="decrement" href="#">–</a><div class="value" id="' + options.specials[objects[i]].id + '"> '+ options.specials[objects[i]].value + ' </div><a class="increment" href="#">+</a></div><div class="name">' +	options.specials[objects[i]].name + '</div>');
 	}
 	update_derived();
-	jQuery('#skills input[type=checkbox]').click(function () {
+	jQuery('#skills').on('click', 'input[type=checkbox]', function (event) {
 		if (jQuery(this).is(':checked')) options.skills_to_tag--;
 		else options.skills_to_tag++;
 		if (options.skills_to_tag <= 0){
@@ -143,9 +143,15 @@ jQuery(document).ready(function () {
 		  options.skills_to_tag++;
 			return false;
 		}
+    console.log('skills to tag: ' + options.skills_to_tag);
+    console.log(jQuery(this).parent().parent().children('.value').text());
+    console.log(jQuery(this).parent().parent().children(".value").attr('id'));
 		for (i = 0; i < options.skills.length; i++) {
 			if (options.skills[i].id == jQuery(this).siblings(".value").attr('id')) {
+        console.log('chose skill: '+ i + ' - ' + options.skills[i].id);
 				options.skills[i].tagged = !options.skills[i].tagged;
+        if (options.skills[i].tagged) options.skills[i].value = options.skills[i].value + 15;
+        else options.skills[i].value = options.skills[i].value - 15;
 				break;
 			}
 		}
