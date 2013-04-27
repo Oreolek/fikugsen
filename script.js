@@ -116,15 +116,19 @@ function update_derived() {
 	jQuery('#derived').empty();
 	jQuery('#skills').empty();
 	for (i = 0; i < options.derived.length; i++) {
-		jQuery('#derived').append('<div class="parameter"><div class="value" id="' + options.derived[i].id + '"> '+ options.derived[i].value(options.specials) + ' </div></div><div class="name">' + options.derived[i].name + '</div>');
+    value = options.derived[i].value(options.specials);
+		jQuery('#derived').append('<div class="parameter"><div class="value" id="' + options.derived[i].id + '"> '+ value + ' </div></div><div class="name">' + options.derived[i].name + '</div>');
 	}
 	for (i = 0; i < options.skills.length; i++) {
-		text = '<div class="row"><div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ options.skills[i].value(options.specials) + ' </div></div><div class="name">' + options.skills[i].name + '<input type="checkbox"';
+    value = options.skills[i].value(options.specials);
+    if (options.skills[i].tagged) value = value + 15;
+		text = '<div class="row"><div class="parameter"><div class="value" id="' + options.skills[i].id + '"> '+ value + ' </div></div><div class="name">' + options.skills[i].name + '<input type="checkbox" name="' + i + '"';
 		if (options.skills[i].tagged) {
 			text = text + ' checked';
 		}
 		text = text + '></div></div>';
 		jQuery('#skills').append(text);
+    jQuery('#skills_to_tag').text(options.skills_to_tag);
 	}
 }
 
@@ -136,25 +140,21 @@ jQuery(document).ready(function () {
 	}
 	update_derived();
 	jQuery('#skills').on('click', 'input[type=checkbox]', function (event) {
-		if (jQuery(this).is(':checked')) options.skills_to_tag--;
-		else options.skills_to_tag++;
-		if (options.skills_to_tag <= 0){
+		if (jQuery(this).is(':checked')) {
+		  if (options.skills_to_tag > 0){
+        options.skills_to_tag--;
+			  jQuery(this).attr('checked', 'true');
+      } else {
+        event.preventDefault();
+        return false;
+      }
+    }
+		else {
+      options.skills_to_tag++;
 			jQuery(this).removeAttr('checked');
-		  options.skills_to_tag++;
-			return false;
-		}
-    console.log('skills to tag: ' + options.skills_to_tag);
-    console.log(jQuery(this).parent().parent().children('.value').text());
-    console.log(jQuery(this).parent().parent().children(".value").attr('id'));
-		for (i = 0; i < options.skills.length; i++) {
-			if (options.skills[i].id == jQuery(this).siblings(".value").attr('id')) {
-        console.log('chose skill: '+ i + ' - ' + options.skills[i].id);
-				options.skills[i].tagged = !options.skills[i].tagged;
-        if (options.skills[i].tagged) options.skills[i].value = options.skills[i].value + 15;
-        else options.skills[i].value = options.skills[i].value - 15;
-				break;
-			}
-		}
+    }
+    chosen_skill = jQuery(this).attr('name');
+		options.skills[chosen_skill].tagged = !options.skills[chosen_skill].tagged;
 		update_derived();
 	});
 	jQuery('#specials .increment').click(function () {
